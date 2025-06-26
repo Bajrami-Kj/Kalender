@@ -42,10 +42,14 @@ namespace Kalender
             int currentDay = 5;
 
             PrintKalender(currentDay);
-            
+            Save();
 
 
         }
 
+        private static void Save()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
