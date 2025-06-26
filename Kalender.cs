@@ -63,8 +63,38 @@ namespace Kalender
                     isThereTermin[i] = "NEIN";
                 }
             }
-            Console.WriteLine($"Eingabe \"x\" für termin hinzufügen, \"y\" für");
+            
             PrintKalender(currentDay,isThereTermin,"Jänner");
+            Console.WriteLine($"Eingabe \"x\" für termin hinzufügen, \"y\" für Termin löschen, \"z\" für Termin ändern, \"END\" für Programm abrechen und saven");
+            bool validInput = true;
+            do
+            {
+                Console.Write("Ihre Eingabe:");
+                string input = Console.ReadLine();
+
+                if (input == "x" || input == "X")
+                {
+                    validInput = true;
+                }
+                else if (input == "y" || input == "Y")
+                {
+                    validInput = true;
+                }
+                else if (input == "z" || input == "Z")
+                {
+                    validInput = true;
+                }
+                else if (input == "END")
+                {
+                    validInput = true;
+                }
+                else
+                {
+                    Console.WriteLine("Falsche Eingabe!");
+                    validInput = false;
+                }
+            } while (!validInput);
+            
             Save();
 
 
