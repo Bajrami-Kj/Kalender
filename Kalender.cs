@@ -50,7 +50,7 @@ namespace Kalender
             int currentDay = 5;
 
             PrintKalender(currentDay);
-            Save(input);
+            Save();
 
 
         }
