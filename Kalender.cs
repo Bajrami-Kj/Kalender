@@ -10,9 +10,13 @@ namespace Kalender
             int[] days = new int[7];
             for (int i = 0; i < days.Length; i++)
             {
-                days[i] = currentDay + i;
-
+                days[i] = currentDay ++;
+                if(days[i] >= 30)
+                {
+                    currentDay = 1;
+                }
             }
+
             for(int i = 0; i  < kalender.GetLength(0); i++)
             {
                     Console.WriteLine("-----------------------------------------------------------------------------------------------------------------------");
@@ -27,11 +31,14 @@ namespace Kalender
                 }
                 if (i==2)
                 {
-                                        
+                     Console.Write($"|              |                |              |                  |                 |                  |              |");                  
                 }
+
+
+
                 Console.WriteLine();
             }
-  
+            Console.WriteLine("-----------------------------------------------------------------------------------------------------------------------");
         }
 
       
@@ -39,7 +46,7 @@ namespace Kalender
         {
             Console.WriteLine("Sommerferien - Kalender");
             Console.WriteLine("=======================");
-            int currentDay = 5;
+            int currentDay = 26;
 
             PrintKalender(currentDay);
             Save();
@@ -49,7 +56,7 @@ namespace Kalender
 
         private static void Save()
         {
-            throw new NotImplementedException();
+            
         }
     }
 }
