@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Security;
 
 namespace Kalender
 {
     public class Kalender
     {
-        public static void PrintKalender(int currentDay)
+        public static void PrintKalender(int currentDay, string[] isTheretermin,string month)
         {
             string[,] kalender = new string[3, 7];
             int[] days = new int[7];
@@ -16,7 +17,7 @@ namespace Kalender
                     currentDay = 1;
                 }
             }
-
+            Console.WriteLine($"Monat: {month}");
             for(int i = 0; i  < kalender.GetLength(0); i++)
             {
                     Console.WriteLine("-----------------------------------------------------------------------------------------------------------------------");
@@ -31,7 +32,7 @@ namespace Kalender
                 }
                 if (i==2)
                 {
-                     Console.Write($"|              |                |              |                  |                 |                  |              |");                  
+                     Console.Write($"|     {isTheretermin[0],-3}     |      {isTheretermin[0],-3}      |      {isTheretermin[0],-3}    |      {isTheretermin[0],-3}        |       {isTheretermin[0],-3}      |       {isTheretermin[0],-3}       |     {isTheretermin[0],-3}     |");                  
                 }
 
 
@@ -46,9 +47,24 @@ namespace Kalender
         {
             Console.WriteLine("Sommerferien - Kalender");
             Console.WriteLine("=======================");
-            int currentDay = 26;
+            int currentDay = 1;
+            bool[] terminOrNot = new bool[7];
+            string[] isThereTermin = new string[7];
 
-            PrintKalender(currentDay);
+
+            for (int i = 0; i < terminOrNot.Length; i++)
+            {
+                if(terminOrNot[i] == true)
+                {
+                    isThereTermin[i] = "JA";
+                }
+                else
+                {
+                    isThereTermin[i] = "NEIN";
+                }
+            }
+            Console.WriteLine($"Eingabe \"x\" für termin hinzufügen, \"y\" für");
+            PrintKalender(currentDay,isThereTermin,"Jänner");
             Save();
 
 
