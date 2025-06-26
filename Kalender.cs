@@ -39,17 +39,15 @@ namespace Kalender
         {
             Console.WriteLine("Sommerferien - Kalender");
             Console.WriteLine("=======================");
+            string input = "";
             int currentDay = 5;
 
             PrintKalender(currentDay);
-            Save();
+            Save(input);
 
 
         }
 
-        private static void Save()
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }
