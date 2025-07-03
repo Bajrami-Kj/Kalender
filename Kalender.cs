@@ -1,7 +1,7 @@
 ﻿using Spectre.Console;
 using System;
 
-namespace CalendarApp
+namespace Kalender
 {
     class Program
     {
@@ -101,54 +101,54 @@ namespace CalendarApp
                 string action = AnsiConsole.Prompt(
                     new SelectionPrompt<string>()
                         .Title("What do you want to do?")
-                        .AddChoices("Add appointment", "Delete appointment", "Change appointment", "Change week", "Exit")
+                        .AddChoices("Add Termin", "Delete Termin", "Change Termin", "Change week", "Exit")
                 );
 
-                if (action == "Add appointment")
+                if (action == "Add Termin")
                 {
                     int day = ChooseWeekday(weekdays);
 
                     if (allAppointments[currentWeek - 1, day] != "NO")
                     {
-                        Console.WriteLine("There is already an appointment on this day.");
+                        Console.WriteLine("There is already an Termin on this day.");
                     }
                     else
                     {
-                        Console.Write("Enter appointment: ");
+                        Console.Write("Enter Termin: ");
                         string appointment = Console.ReadLine();
                         allAppointments[currentWeek - 1, day] = appointment;
-                        Console.WriteLine("Appointment added.");
+                        Console.WriteLine("Termin added.");
                     }
                 }
-                else if (action == "Delete appointment")
+                else if (action == "Delete Termin")
                 {
                     int day = ChooseWeekday(weekdays);
 
                     if (allAppointments[currentWeek - 1, day] == "NO")
                     {
-                        Console.WriteLine("No appointment on this day.");
+                        Console.WriteLine("No Termin on this day.");
                     }
                     else
                     {
                         allAppointments[currentWeek - 1, day] = "NO";
-                        Console.WriteLine("Appointment deleted.");
+                        Console.WriteLine("Termin deleted.");
                     }
                 }
-                else if (action == "Change appointment")
+                else if (action == "Change Termin")
                 {
                     int day = ChooseWeekday(weekdays);
 
                     if (allAppointments[currentWeek - 1, day] == "NO")
                     {
-                        Console.WriteLine("No appointment on this day.");
+                        Console.WriteLine("No Termin on this day.");
                     }
                     else
                     {
-                        Console.WriteLine("Current appointment: " + allAppointments[currentWeek - 1, day]);
-                        Console.Write("Enter new appointment: ");
+                        Console.WriteLine("Current Termin: " + allAppointments[currentWeek - 1, day]);
+                        Console.Write("Enter new Termin: ");
                         string newAppointment = Console.ReadLine();
                         allAppointments[currentWeek - 1, day] = newAppointment;
-                        Console.WriteLine("Appointment changed.");
+                        Console.WriteLine("Termin changed.");
                     }
                 }
                 else if (action == "Change week")
