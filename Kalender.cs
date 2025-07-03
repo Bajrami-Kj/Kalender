@@ -1,108 +1,166 @@
-﻿using System;
-using System.Security;
+﻿using Spectre.Console;
+using System;
 
-namespace Kalender
+namespace CalendarApp
 {
-    public class Kalender
+    class Program
     {
-        public static void PrintKalender(int currentDay, string[] isTheretermin,string month)
+        static void ShowCalendar(int week, string[] weekdays, string[,] allAppointments)
         {
-            string[,] kalender = new string[3, 7];
-            int[] days = new int[7];
-            for (int i = 0; i < days.Length; i++)
+            int startDay = (week - 1) * 7 + 1;
+
+            Table table = new Table();
+
+            for (int i = 0; i < 7; i++)
             {
-                days[i] = currentDay ++;
-                if(days[i] >= 30)
-                {
-                    currentDay = 1;
-                }
+                table.AddColumn(new TableColumn(weekdays[i]).Centered());
             }
-            Console.WriteLine($"Monat: {month}");
-            for(int i = 0; i  < kalender.GetLength(0); i++)
+
+            string[] days = new string[7];
+            for (int i = 0; i < 7; i++)
             {
-                    Console.WriteLine("-----------------------------------------------------------------------------------------------------------------------");
-                
-                if(i == 0)
+                int dayNumber = startDay + i;
+                if (dayNumber > 30)
                 {
-                    Console.Write($"|    Montag    |    Dienstag    |    Mittwoch  |    Donnerstag    |     Freitag     |     Samstag      |     Sonntag  |");
+                    dayNumber = dayNumber - 30;
                 }
-                if(i == 1)
-                {
-                    Console.Write($"|      {days[0],-3}     |        {days[1],-3}     |       {days[2],-3}    |         {days[3],-3}      |         {days[4],-3}     |         {days[5],-3}      |      {days[6],-3}     |");
-                }
-                if (i==2)
-                {
-                     Console.Write($"|     {isTheretermin[0],-3}     |      {isTheretermin[0],-3}      |      {isTheretermin[0],-3}    |      {isTheretermin[0],-3}        |       {isTheretermin[0],-3}      |       {isTheretermin[0],-3}       |     {isTheretermin[0],-3}     |");                  
-                }
-
-
-
-                Console.WriteLine();
+                days[i] = dayNumber.ToString();
             }
-            Console.WriteLine("-----------------------------------------------------------------------------------------------------------------------");
-        }
+            table.AddRow(days);
 
-      
-        public static void Main()
-        {
-            Console.WriteLine("Sommerferien - Kalender");
-            Console.WriteLine("=======================");
-            int currentDay = 1;
-            bool[] terminOrNot = new bool[7];
-            string[] isThereTermin = new string[7];
-
-
-            for (int i = 0; i < terminOrNot.Length; i++)
+            string[] appointments = new string[7];
+            for (int i = 0; i < 7; i++)
             {
-                if(terminOrNot[i] == true)
+                if (string.IsNullOrEmpty(allAppointments[week - 1, i]) || allAppointments[week - 1, i] == "NO")
                 {
-                    isThereTermin[i] = "JA";
+                    appointments[i] = "NO";
                 }
                 else
                 {
-                    isThereTermin[i] = "NEIN";
+                    appointments[i] = allAppointments[week - 1, i];
                 }
             }
-            
-            PrintKalender(currentDay,isThereTermin,"Jänner");
-            Console.WriteLine($"Eingabe \"x\" für termin hinzufügen, \"y\" für Termin löschen, \"z\" für Termin ändern, \"END\" für Programm abrechen und saven");
-            bool validInput = true;
+            table.AddRow(appointments);
+
+            AnsiConsole.Clear();
+            Console.WriteLine("Calendar - Week " + week);
+            AnsiConsole.Write(table);
+        }
+
+        static int ChooseWeekday(string[] weekdays)
+        {
+            string choice = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("Choose the weekday:")
+                    .AddChoices(weekdays)
+            );
+
+            for (int i = 0; i < weekdays.Length; i++)
+            {
+                if (weekdays[i] == choice)
+                {
+                    return i;
+                }
+            }
+
+            return 0;
+        }
+
+        static int ChooseWeek()
+        {
+            string[] weeks = { "1", "2", "3", "4", "5" };
+            string choice = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("Choose the week (1-5):")
+                    .AddChoices(weeks)
+            );
+
+            return int.Parse(choice);
+        }
+
+        static void Main(string[] args)
+        {
+            string[] weekdays = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+            string[,] allAppointments = new string[5, 7];
+
+            for (int week = 0; week < 5; week++)
+            {
+                for (int day = 0; day < 7; day++)
+                {
+                    allAppointments[week, day] = "NO";
+                }
+            }
+
+            int currentWeek = 1;
+            bool running = true;
+
             do
             {
-                Console.Write("Ihre Eingabe:");
-                string input = Console.ReadLine();
+                ShowCalendar(currentWeek, weekdays, allAppointments);
 
-                if (input == "x" || input == "X")
-                {
-                    validInput = true;
-                }
-                else if (input == "y" || input == "Y")
-                {
-                    validInput = true;
-                }
-                else if (input == "z" || input == "Z")
-                {
-                    validInput = true;
-                }
-                else if (input == "END")
-                {
-                    validInput = true;
-                }
-                else
-                {
-                    Console.WriteLine("Falsche Eingabe!");
-                    validInput = false;
-                }
-            } while (!validInput);
-            
-            Save();
+                string action = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("What do you want to do?")
+                        .AddChoices("Add appointment", "Delete appointment", "Change appointment", "Change week", "Exit")
+                );
 
+                if (action == "Add appointment")
+                {
+                    int day = ChooseWeekday(weekdays);
 
-        }
+                    if (allAppointments[currentWeek - 1, day] != "NO")
+                    {
+                        Console.WriteLine("There is already an appointment on this day.");
+                    }
+                    else
+                    {
+                        Console.Write("Enter appointment: ");
+                        string appointment = Console.ReadLine();
+                        allAppointments[currentWeek - 1, day] = appointment;
+                        Console.WriteLine("Appointment added.");
+                    }
+                }
+                else if (action == "Delete appointment")
+                {
+                    int day = ChooseWeekday(weekdays);
 
-        private static void Save()
-        {
-            
+                    if (allAppointments[currentWeek - 1, day] == "NO")
+                    {
+                        Console.WriteLine("No appointment on this day.");
+                    }
+                    else
+                    {
+                        allAppointments[currentWeek - 1, day] = "NO";
+                        Console.WriteLine("Appointment deleted.");
+                    }
+                }
+                else if (action == "Change appointment")
+                {
+                    int day = ChooseWeekday(weekdays);
+
+                    if (allAppointments[currentWeek - 1, day] == "NO")
+                    {
+                        Console.WriteLine("No appointment on this day.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Current appointment: " + allAppointments[currentWeek - 1, day]);
+                        Console.Write("Enter new appointment: ");
+                        string newAppointment = Console.ReadLine();
+                        allAppointments[currentWeek - 1, day] = newAppointment;
+                        Console.WriteLine("Appointment changed.");
+                    }
+                }
+                else if (action == "Change week")
+                {
+                    currentWeek = ChooseWeek();
+                }
+                else if (action == "Exit")
+                {
+                    running = false;
+                    Console.WriteLine("Program ended.");
+                }
+            } while (running);
         }
     }
 }
